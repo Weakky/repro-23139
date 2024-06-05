@@ -5,7 +5,7 @@ generator client {
 
 datasource db {
   provider = "postgres"
-  url      = env("DATABASE_URL")
+  url      = "postgresql://postgres:prisma@localhost:5434/postgres?schema=a_repro_23139"
 }
 
 model Account {
