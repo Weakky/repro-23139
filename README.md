@@ -1,5 +1,6 @@
 ## How to run
 
+- `yarn install`
 - `docker-compose up -d postgres12`
 - `yarn prisma db push`
 - `yarn prisma generate`
