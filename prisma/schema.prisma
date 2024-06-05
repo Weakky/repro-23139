@@ -1,0 +1,47 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["relationJoins"]
+}
+
+datasource db {
+  provider = "postgres"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id Int @id
+
+  companyId  Int     @map("company_id")
+  scenarioId Int     @map("scenario_id")
+  isDeleted  Boolean
+
+  childEdges  Edge[] @relation("child_edges")
+  parentEdges Edge[] @relation("parent_edges")
+
+  @@unique([id, companyId, scenarioId, isDeleted])
+  @@unique([id, companyId, scenarioId])
+  @@index([companyId, scenarioId, isDeleted])
+  @@index([scenarioId])
+  @@index([id, companyId, scenarioId, isDeleted])
+  @@map("account")
+}
+
+model Edge {
+  parentId Int @id @map("parent_id")
+
+  companyId  Int @map("company_id")
+  scenarioId Int @map("scenario_id")
+
+  childAccountId Int     @map("child_account_id")
+  childAccount   Account @relation("child_edges", fields: [childAccountId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "figure_formula_edge_child_account_id_foreign")
+
+  parentAccountId Int     @map("parent_account_id")
+  parentAccount   Account @relation("parent_edges", fields: [parentAccountId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "figure_formula_edge_parent_account_id_foreign")
+
+  @@index([parentId])
+  @@index([childAccountId])
+  @@index([parentAccountId])
+  @@index([companyId, scenarioId])
+  @@index([companyId, scenarioId, parentAccountId])
+  @@map("edge")
+}
